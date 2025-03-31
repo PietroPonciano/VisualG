@@ -1,0 +1,1 @@
+Este script foi desenvolvido no VisualG, com base no código-fonte do cálculo de CNPJ alfanumérico disponibilizado pelo SERPRO. Sua finalidade é fornecer uma referência para auxiliar programadores na implementação de soluções equivalentes em diversas linguagens de programação.

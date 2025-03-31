@@ -1,0 +1,111 @@
+Algoritmo "Validação de CNPJ"
+
+// Função para validar o formato do CNPJ
+Função ValidaFormato(CNPJ)
+    // Verifica se o CNPJ está no formato correto, por exemplo: XX.XXX.XXX/XXXX-XX
+    Se CNPJ não corresponde ao formato esperado
+        Retorne Falso
+    FimSe
+    Retorne Verdadeiro
+FimFunção
+
+// Função para remover a pontuação do CNPJ
+Função RemovePontuacao(CNPJ)
+    Remover todos os caracteres "." (ponto), "/" (barra) e "-" (hífen)
+    Retorne o CNPJ sem pontuação
+FimFunção
+
+// Função para gerar o dígito verificador do CNPJ
+Função GeraDv(CNPJ)
+    // Remove os dois últimos dígitos do CNPJ (os dígitos verificadores)
+    CNPJ_sem_dv = Primeiros 12 caracteres do CNPJ
+
+    // Calcula o primeiro dígito verificador
+    Primeiro_DV = CalculaDigito(CNPJ_sem_dv)
+
+    // Calcula o segundo dígito verificador
+    Segundo_DV = CalculaDigito(CNPJ_sem_dv + Primeiro_DV)
+
+    // Retorna os dois dígitos verificadores
+    Retorne Primeiro_DV + Segundo_DV
+FimFunção
+
+// Função para calcular um dígito verificador a partir de um CNPJ
+Função CalculaDigito(CNPJ)
+    // Define os pesos para o cálculo (para o primeiro dígito são 5, 4, 3, ..., 2)
+    Pesos = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]
+
+    // Calcula a soma dos produtos do CNPJ e os pesos
+    Soma = 0
+    Para i de 0 até 11 Faça
+        Soma = Soma + (Valor do caractere de CNPJ[i] * Pesos[i])
+    FimPara
+
+    // Calcula o módulo da soma por 11
+    Modulo = Soma % 11
+
+    // Se o módulo for menor que 2, o dígito é 0
+    Se Modulo < 2
+        Retorne 0
+    Senão
+        // Caso contrário, o dígito é 11 - módulo
+        Retorne 11 - Modulo
+    FimSe
+FimFunção
+
+// Função para validar o CNPJ completo
+Função Valida(CNPJ)
+    // Remove a pontuação do CNPJ
+    CNPJ = RemovePontuacao(CNPJ)
+
+    // Verifica se o formato do CNPJ é válido
+    Se ValidaFormato(CNPJ) = Falso
+        Escreva "CNPJ inválido"
+        Pare
+    FimSe
+
+    // Se o CNPJ tiver 14 caracteres, é válido para validação
+    Se Comprimento de CNPJ for 14
+        // Gera o dígito verificador do CNPJ
+        DV = GeraDv(CNPJ)
+
+        // Verifica se o CNPJ original com os dígitos gerados corresponde ao CNPJ informado
+        Se CNPJ é igual ao CNPJ com dígitos verificadores
+            Retorne Verdadeiro // CNPJ válido
+        Senão
+            Retorne Falso // CNPJ inválido
+        FimSe
+    Senão
+        Escreva "CNPJ com tamanho inválido"
+        Retorne Falso
+    FimSe
+FimFunção
+
+// Função principal que recebe parâmetros de entrada
+Início
+    Tente
+        Se Quantidade de argumentos for menor que 2
+            Escreva "Formato inválido do CNPJ"
+            Pare
+        FimSe
+
+        Exec = Argumento 1 // Opção de validação ou geração do dígito verificador
+        CNPJ = Argumento 2 // O CNPJ informado
+
+        Se Exec for "-V" // Verificação de validade
+            Se Valida(CNPJ)
+                Escreva "CNPJ válido"
+            Senão
+                Escreva "CNPJ inválido"
+            FimSe
+        Senão Se Exec for "-DV" // Geração do dígito verificador
+            DV = GeraDv(CNPJ)
+            Escreva DV
+        Senão
+            Escreva "Opção inválida, use -V para validar ou -DV para gerar o dígito verificador"
+        FimSe
+
+    Senão
+        Escreva "Erro: " + Mensagem de erro
+    FimTente
+FimAlgoritmo
